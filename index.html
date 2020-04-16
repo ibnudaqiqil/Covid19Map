@@ -99,8 +99,69 @@
             <div id="title">
                   COVID-19 Monitoring Map
             </div>
+            <div><span id="last-date">Last update: </span><span id="date">2020-04-15 22:33:51 PST</span> </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6 border text-white bg-secondary pt-3 mb-1">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h5 class="card-title text-white text-center">Orang Dalam Pemantauan (ODP) </h5>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="row border border-left-0 border-right-0">
+                        Proses Pemantauan : <br>
+                        Selesai Pemantauan :<br>
+                        <br>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h6 class="text-center pt-1">Total ODP</h6>
+                            <h6 class="card-subtitle mb-2 text-center pt-1" style="font-size: 25px;">3549 <small>(96.62%)</small></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 border bg-warning text-white pt-3 mb-1">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h5 class="card-title text-white text-center">Pasien Dalam Pengawasan (PDP)</h5><br>
+                        </div>
+                    </div>
+                    <div class="row border border-left-0 border-right-0">
+                        Dirawat : <br>
+                        Meninggal : <br>
+                        Sembuh :
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h6 class="text-center pt-1">Total PDP</h6>
+                            <h6 class="card-subtitle mb-2 text-center" style="font-size: 25px;">113                                                        <small>(3.08%)</small></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 border col-sm-6 bg-danger text-white pt-3 mb-1">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h5 class="card-title text-white text-center">Kasus Positif Covid-19/Corona</h5><br>
+                        </div>
+                    </div>
+                    <div class="row border border-left-0 border-right-0">
+                        Dirawat : <br>
+                        Meninggal : <br>
+                        Sembuh :
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h6 class="text-center pt-1">Total Positif COVID-19</h6>
+                            <h6 class="card-subtitle mb-2 text-center" style="font-size: 25px;">11                                                        <small>(0.3%)</small>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="grafik">
-             <h4 id="judulChart"></h4>
+             <strong id="judulChart"></strong>
              <div id="graph-container"><canvas id="myChart" width="10" height="10"></canvas></div>
             </div>
         </div>
@@ -346,9 +407,9 @@
 
     function newChart(Kelurahan,labels, data) {
         var dataLength = labels ? labels.length : 0;
-        var backgroundColors = ['#FFC107',
-                                '#A9E5A9',
-                                '#E40000',
+        var backgroundColors = ['#6c757d',
+                                '#ffc107',
+                                '#dc3545',
                                 'rgba(211,156,131, 0.9)',
                                 'rgba(153, 102, 255, 0.9)',
                                 'rgba(255, 159, 64, 0.9)'];
