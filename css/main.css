@@ -5,11 +5,11 @@
   position: absolute;
   width: 480px;
   top: 1%;
-  bottom: 1%;
+  bottom: 2%;
   left: .5%;
   z-index: 1000;
-  background: #343a40;
-  color: white;
+  background: #f8f9fa!important;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   opacity: 1;
   padding: 40px 15px 20px 15px;
 }
@@ -44,7 +44,7 @@
      position: absolute;
  
   bottom: -20px;
-  right: 20px;
+  right: 60px;
   width: 340px;
   height: 15px;
   z-index: 4000099;

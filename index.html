@@ -83,36 +83,29 @@
 .leaflet-popup-tip-container {
     display: none;
 } 
-#kpi-confirmed {
-    color: rgb(244,67,52);
-  }
-  #kpi-recovered {
-    color: rgb(24,118,211);
-  }
-  #kpi-deceased {
-    color: rgb(54,72,79);
-  }
-  #kpi-critical {
-    color:  rgb(114,4,5);
-  }
-  #kpi-tested {
-    color: rgb(164,173,192);
-  }
-  #kpi-active {
-    color: rgb(223,14,31);
-  }
-  </style>
+#graph-container
+{
+  height: 300px;
+}
+ </style>
 </head>
 <body>
-<div class="container">
-
-      <h1>Sebaran Covid-19 Kota Pekanbaru</h1>
-      <p class="lead">Last update:.</p>
+    <div id="map"></div>
 
 
-      <div class="row">
-        <div class="col-12" style="height: 540px;">
-            <div id="map"></div>
+    
+    <div id="info" class="">
+        <div class="simplebar-wrapper">
+            <div id="title">
+                  COVID-19 Monitoring Map
+            </div>
+            <div id="grafik">
+             <h4 id="judulChart"></h4>
+             <div id="graph-container"><canvas id="myChart" width="10" height="10"></canvas></div>
+            </div>
+        </div>
+        
+    </div>
             <div id="legend-panel" class="card-deck legend">
 
               <div class="card">
@@ -159,10 +152,6 @@
                 </div>
               </div>
             </div> 
-        </div>
-
-      </div>
-
 <!-- /container -->
 
 
@@ -171,25 +160,43 @@
     var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri &mdash; Esri, Diskminfo Kota Pekanbaru, Politeknik Caltex Riau'
             });
+  
 
     var gray = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png');
     // var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png').addTo(mymap);
    
 
     var map = L.map('map', {
-                    center: [0.530138, 101.443340],
-                    zoom: 11,
+                    center: [0.530138, 101.4],
+                    zoom: 12,
                  
                 });
-    L.esri.basemapLayer('Topographic').addTo(map);
 
+     var gray = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png');
+    // var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png').addTo(mymap);
+    var voyager =
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png').addTo(map);
+    var satellite =
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+
+    var baseLayers = {
+      'CARTO Light': gray,
+      'Esri Topo': Esri_WorldTopoMap,
+      'CARTO Voyager': voyager,
+      'ESRI Satellite': satellite
+    }
+
+    L.esri.basemapLayer('Topographic').addTo(map);
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(map);
      var ICON_RS = L.icon({
         iconUrl: 'markers/hospital-building.png',
         iconSize: [27, 31],
         iconAnchor: [13.5, 17.5],
         popupAnchor: [0, -11]
       });
-    L.esri.featureLayer({ 
+    var layer_rs = L.esri.featureLayer({ 
         url: RS_RUJUKAN,
         pointToLayer: function (geojson, latlng) {
             return L.marker(latlng, {
@@ -228,15 +235,22 @@
         highlightLayer = e.target;
         kelurahan =e.target.feature.properties['Kelurahan'].toLocaleString();  
         var labels = ['ODP', 'PDP','POSITIF'];
-        if (typeof DATA_MONITORING[kelurahan] != "undefined")
+        if (typeof DATA_MONITORING[kelurahan] != "undefined"){
             var data = [DATA_MONITORING[kelurahan].ODP,DATA_MONITORING[kelurahan].PDP,DATA_MONITORING[kelurahan].POSITIF];
+            newChart(kelurahan,labels, data);
+        }
         else
+        {
             var data =[0,0,0]
-        var reps = '<strong>Informasi Kelurahan </strong>';
-                    reps += '<canvas id="myChart" width="10" height="10"></canvas>';
+             $("#judulChart").html("")
+             //$("#myChart").html("")
+              $('#myChart').remove(); // this is my <canvas> element
+              $('#graph-container').append('<canvas id="myChart"><canvas>');
+        }
+        
         //console.log(e.target.feature.properties['Kelurahan'].toLocaleString())  
               
-        newChart(kelurahan,labels, data);
+        
         highlightLayer.setStyle({
           weight: 2,
           opacity: 0.8,
@@ -439,18 +453,26 @@
            
         });
 
+        new L.control.layers(baseLayers, {
+        "Sebaran Kelurahan": layer_Kelurahan,
+        "Rumah Sakit Rujukan": layer_rs
+        //"Infected Community &nbsp;&nbsp; <i class='fas fa-procedures' style='color: #dc3545;'></i>": communities
+      }, {
+        collapsed: false
+      }).addTo(map);
 
+/*
       
         var info = L.control();
 
         info.onAdd = function(map) {
             this._div = L.DomUtil.create('div', 'info');
-                                reps = '<strong id="judulChart"></strong><canvas id="myChart" width="10" height="10"></canvas>';
+                                reps = '';
             this._div.innerHTML = reps;
             return this._div;
         };
         info.addTo(map);
-
+*/
 
 
 jQuery(document).ready(function($) {
