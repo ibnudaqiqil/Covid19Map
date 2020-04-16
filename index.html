@@ -333,20 +333,40 @@
             },
             mouseover: informasiChart,
         });
+        kelurahan = feature.properties['Kelurahan']
+        if (typeof DATA_MONITORING[kelurahan] != "undefined"){
+            var ODP = DATA_MONITORING[kelurahan].ODP
+            var PDP = DATA_MONITORING[kelurahan].ODP
+            var POSITIF = DATA_MONITORING[kelurahan].POSITIF
+
+        }
+        else
+        {
+            var ODP=0;
+            var PDP=0;
+            var POSITIF=0;
+        }
         var popupContent = '<table>\
                 <tr>\
                     <th scope="row">Kelurahan</th>\
                     <td>' + (feature.properties['Kelurahan'] !== null ? autolinker.link(feature.properties['Kelurahan'].toLocaleString()) : '') + '</td>\
                 </tr>\
                 <tr>\
-                    <td colspan="2">' + (feature.properties['Kecamatan'] !== null ? autolinker.link(feature.properties['Kecamatan'].toLocaleString()) : '') + '</td>\
+                    <th scope="row">Kecamatan</th>\
+                    <td>' + (feature.properties['Kecamatan'] !== null ? autolinker.link(feature.properties['Kecamatan'].toLocaleString()) : '') + '</td>\
                 </tr>\
                 <tr>\
-                    <td colspan="2">' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    <th scope="row">ODP</th>\
+                    <td>' + ODP + '</td>\
+                </tr>\
+                 <tr>\
+                    <th scope="row">PDP</th>\
+                    <td>' + PDP + '</td>\
                 </tr>\
                 <tr>\
-                    <td colspan="2">' + (feature.properties['Kota'] !== null ? autolinker.link(feature.properties['Kota'].toLocaleString()) : '') + '</td>\
-                </tr>\
+                    <th scope="row">POSITIF</th>\
+                    <td>' + POSITIF + '</td>\
+                    </tr>\
             </table>';
         layer.bindPopup(popupContent, {maxHeight: 400});
     }
