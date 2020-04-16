@@ -43,6 +43,7 @@
 
         <script src="data/Kelurahan_Baru_1.js"></script>
         <link rel="stylesheet" href="css/L.Icon.Pulse.css" />
+        <link rel="stylesheet" href="css/mobile.css">
         <link rel="stylesheet" href="css/main.css">
         
 
@@ -519,6 +520,8 @@
             onEachFeature: informasiKelurahan,
             style: warningKelurahanBerdasarkanStatus,
         });
+
+        var layer_kecamatan = 
         bounds_group.addLayer(layer_Kelurahan);
         map.addLayer(layer_Kelurahan);
 
