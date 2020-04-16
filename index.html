@@ -1,26 +1,32 @@
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Map Visualisasi COVID</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+ 
+
+
+
+
+
+
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 
   <!-- Load Leaflet from CDN -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-  crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-  crossorigin=""></script>
-<script
-  src="https://code.jquery.com/jquery-3.4.1.js"
-  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="  crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="  crossorigin=""></script>
+<script  src="https://code.jquery.com/jquery-3.4.1.js"  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://unpkg.com/esri-leaflet@2.3.3/dist/esri-leaflet.js"
-  integrity="sha512-cMQ5e58BDuu1pr9BQ/eGRn6HaR6Olh0ofcHFWe5XesdCITVuSBiBZZbhCijBe5ya238f/zMMRYIMIIg1jxv4sQ=="
-  crossorigin=""></script>
-<script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+  <script src="https://unpkg.com/esri-leaflet@2.3.3/dist/esri-leaflet.js" integrity="sha512-cMQ5e58BDuu1pr9BQ/eGRn6HaR6Olh0ofcHFWe5XesdCITVuSBiBZZbhCijBe5ya238f/zMMRYIMIIg1jxv4sQ=="  crossorigin=""></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
          <script src="js/qgis2web_expressions.js"></script>
          <script src="js/leaflet.rotatedMarker.js"></script>
@@ -156,8 +162,21 @@
   </style>
 </head>
 <body>
+<div class="container">
 
-<div id="map"></div>
+      <h1>Sebaran Covid-19 Kota Pekanbaru</h1>
+      <p class="lead">Basic grid layouts to get you familiar with building within the Bootstrap grid system.</p>
+
+      
+
+      <div class="row">
+        <div class="col-12" style="height: 540px;"><div id="map"></div></div>
+
+      </div>
+
+
+    </div> <!-- /container -->
+
 
 <script>
     var RS_RUJUKAN = "https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/ArcGIS/rest/services/RS_Rujukan_COVID19_Indonesia/FeatureServer/0"
@@ -170,8 +189,8 @@
    
 
     var map = L.map('map', {
-                    center: [0.510138, 101.443340],
-                    zoom: 12,
+                    center: [0.530138, 101.443340],
+                    zoom: 11,
                  
                 });
     L.esri.basemapLayer('Topographic').addTo(map);
@@ -218,7 +237,7 @@
             var data = [DATA_MONITORING[kelurahan].ODP,DATA_MONITORING[kelurahan].PDP,DATA_MONITORING[kelurahan].POSITIF];
         else
             var data =[0,0,0]
-        var reps = '<h4>Informasi Kelurahan </h4>';
+        var reps = '<strong>Informasi Kelurahan </strong>';
                     reps += '<canvas id="myChart" width="10" height="10"></canvas>';
         //console.log(e.target.feature.properties['Kelurahan'].toLocaleString())  
               
@@ -433,7 +452,7 @@
 
         info.onAdd = function(map) {
             this._div = L.DomUtil.create('div', 'info');
-                                reps = '<h4 id="judulChart"></h4><canvas id="myChart" width="10" height="10"></canvas>';
+                                reps = '<strong id="judulChart"></strong><canvas id="myChart" width="10" height="10"></canvas>';
             this._div.innerHTML = reps;
             return this._div;
         };
@@ -447,6 +466,10 @@ jQuery(document).ready(function($) {
         
 
       </script>
-
-</body>
+   
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
 </html>
