@@ -33,7 +33,7 @@
         <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
         <script src="js/leaflet-search.js"></script>
 
-        <script src="data/Kelurahan_Baru_0.js"></script>
+        <script src="data/Kelurahan_Baru_1.js"></script>
         <link rel="stylesheet" href="css/L.Icon.Pulse.css" />
         <script>
             (function(window) {
@@ -160,10 +160,14 @@
 <div id="map"></div>
 
 <script>
-
+    var RS_RUJUKAN = "https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/ArcGIS/rest/services/RS_Rujukan_COVID19_Indonesia/FeatureServer/0"
     var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri &mdash; Esri, Diskminfo Kota Pekanbaru, Politeknik Caltex Riau'
             });
+
+    var gray = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png');
+    // var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png').addTo(mymap);
+   
 
     var map = L.map('map', {
                     center: [0.510138, 101.443340],
@@ -171,6 +175,21 @@
                  
                 });
     L.esri.basemapLayer('Topographic').addTo(map);
+
+     var ICON_RS = L.icon({
+        iconUrl: 'markers/hospital-building.png',
+        iconSize: [27, 31],
+        iconAnchor: [13.5, 17.5],
+        popupAnchor: [0, -11]
+      });
+    L.esri.featureLayer({ 
+        url: RS_RUJUKAN,
+        pointToLayer: function (geojson, latlng) {
+            return L.marker(latlng, {
+                icon: ICON_RS
+            });
+        }
+    }).addTo(map);
 
     var highlightLayer;
 
@@ -204,15 +223,13 @@
         //console.log(e.target.feature.properties['Kelurahan'].toLocaleString())  
               
         newChart(kelurahan,labels, data);
-        if (e.target.feature.geometry.type === 'LineString') {
-            highlightLayer.setStyle({
-                color: '#ffff00',
-              });
-        } else {
-              highlightLayer.setStyle({
-                 color: 'red'
-              });
-            }
+        highlightLayer.setStyle({
+          weight: 2,
+          opacity: 0.8,
+          color: '#e3e3e3',
+          fillColor: '#00ffd9',
+          fillOpacity: 0.1
+        });
     }
     function informasiKelurahan(feature, layer) {
         //layer.bindLabel(feature.properties['Kelurahan'].toLocaleString(), {noHide:true,direction:'right'});
@@ -272,8 +289,9 @@
         var kelurahan =feature.properties['Kelurahan']
         var Warna = getColor(kelurahan)
         //jika ada positif kasi blink2
-        if (typeof DATA_MONITORING[kelurahan] != "undefined" && feature.geometry.type == "MultiPolygon") {
-            
+         //console.log(feature)
+        if (typeof DATA_MONITORING[kelurahan] != "undefined" && feature.geometry.type == "Polygon") {
+            //console.log(feature)
             var koordinatBlink =  turf.centroid((feature.geometry))
             var pulsingIcon = L.icon.pulse({iconSize:[25,25],color:Warna,fillColor:Warna});
             var marker = L.marker([koordinatBlink.geometry.coordinates[1],koordinatBlink.geometry.coordinates[0]],{icon: pulsingIcon}).addTo(map);
@@ -288,7 +306,7 @@
          return {
             pane: 'pane_Kelurahan',
             opacity: 0.8,
-            color: 'rgba(0,0,0,1)',
+            color: '#b3b3b3',
             dashArray: '',
             lineCap: 'butt',
             lineJoin: 'miter',
@@ -420,7 +438,6 @@
             return this._div;
         };
         info.addTo(map);
-
 
 
 
