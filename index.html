@@ -296,6 +296,7 @@
         highlightLayer = e.target;
         kelurahan =e.target.feature.properties['Kelurahan'].toLocaleString();  
         var labels = ['ODP', 'PDP','POSITIF'];
+        console.log(e.target.feature)
         if (typeof DATA_MONITORING[kelurahan] != "undefined"){
             var data = [DATA_MONITORING[kelurahan].ODP,DATA_MONITORING[kelurahan].PDP,DATA_MONITORING[kelurahan].POSITIF];
             newChart(kelurahan,labels, data);
@@ -354,14 +355,16 @@
         if (typeof DATA_MONITORING[b] != "undefined") {
             //console.log(b)
             if(DATA_MONITORING[b].POSITIF>=10)
-                return warnaPeta[6]
-            else if(DATA_MONITORING[b].POSITIF>=3)
                 return warnaPeta[5]
+            else if(DATA_MONITORING[b].POSITIF>=3)
+                return warnaPeta[4]
             
             else if(DATA_MONITORING[b].POSITIF>=1)
-                return warnaPeta[4]
-            else if(DATA_MONITORING[b].PDP>=4)
                 return warnaPeta[3]
+            else if(DATA_MONITORING[b].PDP>=4)
+                return warnaPeta[2]
+             else if(DATA_MONITORING[b].ODP>=0)
+                return warnaPeta[1]
        ;
         }
         else{
@@ -383,8 +386,21 @@
          //console.log(feature)
         if (typeof DATA_MONITORING[kelurahan] != "undefined" && feature.geometry.type == "Polygon") {
             //console.log(feature)
+            if(DATA_MONITORING[kelurahan].POSITIF>=10)
+                getar=1
+            else if(DATA_MONITORING[kelurahan].POSITIF>0)
+                getar=2
+            else if (DATA_MONITORING[kelurahan].PDP>0){
+                getar=3               
+            }
+             else if (DATA_MONITORING[kelurahan].ODP>0){
+                getar=5
+                console.log(feature)
+            }
+            else
+                getar=6
             var koordinatBlink =  turf.centroid((feature.geometry))
-            var pulsingIcon = L.icon.pulse({iconSize:[25,25],color:Warna,fillColor:Warna});
+            var pulsingIcon = L.icon.pulse({iconSize:[25,25],color:Warna,fillColor:Warna,heartbeat:getar});
             var marker = L.marker([koordinatBlink.geometry.coordinates[1],koordinatBlink.geometry.coordinates[0]],{icon: pulsingIcon}).addTo(map);
 
         }
@@ -481,7 +497,12 @@
         "Tuah Madani":{
             ODP:100,
             PDP:4,
-            POSITIF:3
+            POSITIF:13
+        },
+        "Palas":{
+            ODP:100,
+            PDP:0,
+            POSITIF:0
         },
     }
 
