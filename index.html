@@ -38,89 +38,13 @@
         <script src="js/labels.js"></script>
         <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
         <script src="js/leaflet-search.js"></script>
+        <script src="js/chroma.min.js"></script>
+        <script src="js/L.Icon.Pulse.js"></script>
 
         <script src="data/Kelurahan_Baru_1.js"></script>
         <link rel="stylesheet" href="css/L.Icon.Pulse.css" />
-        <script>
-            (function(window) {
-
-    L.Icon.Pulse = L.DivIcon.extend({
-
-        options: {
-            className: '',
-            iconSize: [12,12],
-            fillColor: 'red',
-            color: 'red',
-            animate: true,
-            heartbeat: 1,
-        },
-
-        initialize: function (options) {
-            L.setOptions(this,options);
-
-            // css
-            
-            var uniqueClassName = 'lpi-'+ new Date().getTime()+'-'+Math.round(Math.random()*100000);
-
-            var before = ['background-color: '+this.options.fillColor];
-
-            var after = [
-
-                'box-shadow: 0 0 6px 2px '+this.options.color,
-
-                'animation: pulsate ' + this.options.heartbeat + 's ease-out',
-                'animation-iteration-count: infinite',
-                'animation-delay: '+ (this.options.heartbeat + .1) + 's',
-            ];
-
-            if (!this.options.animate){
-                after.push('animation: none');
-                after.push('box-shadow:none');
-            }
-
-            var css = [
-                '.'+uniqueClassName+'{'+before.join(';')+';}',
-                '.'+uniqueClassName+':after{'+after.join(';')+';}',
-            ].join('');
- 
-            var el = document.createElement('style');
-            if (el.styleSheet){
-                el.styleSheet.cssText = css;
-            } else {
-                el.appendChild(document.createTextNode(css));
-            }
-
-            document.getElementsByTagName('head')[0].appendChild(el);
-
-            // apply css class
-
-            this.options.className = this.options.className+' leaflet-pulsing-icon '+uniqueClassName;
-
-            // initialize icon
-            
-            L.DivIcon.prototype.initialize.call(this, options);
+        <link rel="stylesheet" href="css/main.css">
         
-        }
-    });
-
-    L.icon.pulse = function (options) {
-        return new L.Icon.Pulse(options);
-    };
-
-
-    L.Marker.Pulse = L.Marker.extend({
-        initialize: function (latlng,options) {
-            options.icon = L.icon.pulse(options);
-            L.Marker.prototype.initialize.call(this, latlng, options);
-        }
-    });
-
-    L.marker.pulse = function (latlng,options) {
-        return new L.Marker.Pulse(latlng,options);
-    };
-
-})(window);
-        </script>
 
 
   <style>
@@ -159,23 +83,87 @@
 .leaflet-popup-tip-container {
     display: none;
 } 
+#kpi-confirmed {
+    color: rgb(244,67,52);
+  }
+  #kpi-recovered {
+    color: rgb(24,118,211);
+  }
+  #kpi-deceased {
+    color: rgb(54,72,79);
+  }
+  #kpi-critical {
+    color:  rgb(114,4,5);
+  }
+  #kpi-tested {
+    color: rgb(164,173,192);
+  }
+  #kpi-active {
+    color: rgb(223,14,31);
+  }
   </style>
 </head>
 <body>
 <div class="container">
 
       <h1>Sebaran Covid-19 Kota Pekanbaru</h1>
-      <p class="lead">Basic grid layouts to get you familiar with building within the Bootstrap grid system.</p>
+      <p class="lead">Last update:.</p>
 
-      
 
       <div class="row">
-        <div class="col-12" style="height: 540px;"><div id="map"></div></div>
+        <div class="col-12" style="height: 540px;">
+            <div id="map"></div>
+            <div id="legend-panel" class="card-deck legend">
+
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title grey-circles" style="color:black">no case</h5>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body legend-color-1">
+                  <h5 class="card-title" style="color:black">1</h5>
+
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body legend-color-2">
+                  <h5 class="card-title" style="color:black">100</h5>
+
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-body  legend-color-3">
+                  <h5 class="card-title" style="color:black">1,000</h5>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body  legend-color-4">
+                  <h5 class="card-title" style="color:black">5,000</h5>
+
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body legend-color-5">
+                  <h5 class="card-title" style="color:black">10,000</h5>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body legend-color-6">
+                  <h5 class="card-title" style="color:black">50,000+</h5>
+                </div>
+              </div>
+            </div> 
+        </div>
 
       </div>
 
-
-    </div> <!-- /container -->
+<!-- /container -->
 
 
 <script>
@@ -211,23 +199,30 @@
     }).addTo(map);
 
     var highlightLayer;
+    //create colot scale for both region and legend,and insert the "style" into the "head" tag
+    var warnaPeta = chroma.scale('YlOrRd').mode('lch').colors(6);
+    for (i = 0; i < 6; i++) {
+      $('head').append($("<style> .region-color-" + (i + 1).toString() + " { color: " + warnaPeta[i] + "; font-size: 15px; text-shadow: 0 0 3px #ffffff;} </style>"));
+      $('head').append($("<style> .legend-color-" + (i + 1).toString() + " { background: " + warnaPeta[i] + "; font-size: 15px; text-shadow: 0 0 3px #ffffff;} </style>"));
+    }
 
     
     var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
     var bounds_group = new L.featureGroup([]);
-        function setBounds() {
-        }
-        //Add labels layer
-        var labelStyle = {
-            color: 'pink',
-            opacity: 0
+    function setBounds() {
 
-        };
-        var labelMarkerOptions = {
-                opacity: 0,
-                fillOpacity: 0,
-                fillColor:'brown'
-        };
+    }
+    //Add labels layer
+    var labelStyle = {
+        color: 'pink',
+        opacity: 0
+
+    };
+    var labelMarkerOptions = {
+            opacity: 0,
+            fillOpacity: 0,
+            fillColor:'brown'
+    };
 
     function informasiChart(e) {
         highlightLayer = e.target;
@@ -284,20 +279,22 @@
         if (typeof DATA_MONITORING[b] != "undefined") {
             //console.log(b)
             if(DATA_MONITORING[b].POSITIF>=10)
-                return '#000000'
+                return warnaPeta[6]
             else if(DATA_MONITORING[b].POSITIF>=3)
-                return '#8B0000'
+                return warnaPeta[5]
             
             else if(DATA_MONITORING[b].POSITIF>=1)
-                return 'rgba(255,0,0,1)'
+                return warnaPeta[4]
             else if(DATA_MONITORING[b].PDP>=4)
-                return '#FF7F00'
+                return warnaPeta[3]
        ;
         }
         else{
-            return '#99ff99'
+            return warnaPeta[0]
+            //return '#99ff99'
         }
     }
+
     var getCentroid = function (arr) { 
         return arr.reduce(function (x,y) {
                 return [x[0] + y[0]/arr.length, x[1] + y[1]/arr.length] 
@@ -316,12 +313,6 @@
             var marker = L.marker([koordinatBlink.geometry.coordinates[1],koordinatBlink.geometry.coordinates[0]],{icon: pulsingIcon}).addTo(map);
 
         }
-/*
-        //marker latlng
-       
-
-*/
-  
          return {
             pane: 'pane_Kelurahan',
             opacity: 0.8,
@@ -337,43 +328,45 @@
         }
        
     }
+
+
     function newChart(Kelurahan,labels, data) {
-            var dataLength = labels ? labels.length : 0;
-            var backgroundColors = ['#FFC107',
-                                    '#A9E5A9',
-                                    '#E40000',
-                                    'rgba(211,156,131, 0.9)',
-                                    'rgba(153, 102, 255, 0.9)',
-                                    'rgba(255, 159, 64, 0.9)'];
-            var colors = [];
-            for (var i = 0; i < dataLength; i++) {
-                colors.push(backgroundColors[i]);
-            };
-            var ctx = document.getElementById("myChart");
-            $("#judulChart").html("Data Monitoring Kelurahan<br>"+Kelurahan)
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '# orang',
-                        data: data,
-                        backgroundColor: colors,
-                        borderColor: colors,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero:true
-                            }
-                        }]
-                    }
-                }
-            });
+        var dataLength = labels ? labels.length : 0;
+        var backgroundColors = ['#FFC107',
+                                '#A9E5A9',
+                                '#E40000',
+                                'rgba(211,156,131, 0.9)',
+                                'rgba(153, 102, 255, 0.9)',
+                                'rgba(255, 159, 64, 0.9)'];
+        var colors = [];
+        for (var i = 0; i < dataLength; i++) {
+            colors.push(backgroundColors[i]);
         };
+        var ctx = document.getElementById("myChart");
+        $("#judulChart").html("Data Monitoring Kelurahan<br>"+Kelurahan)
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# orang',
+                    data: data,
+                    backgroundColor: colors,
+                    borderColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    };
     var DATA_MONITORING={
         "Simpang Empat":{
             ODP:10,
